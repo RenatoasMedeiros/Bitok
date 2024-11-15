@@ -17,7 +17,7 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
     // Since we are wrapping all the components we need to pass asChild so it maintain the original styles
     // The link require a child with a onPress Event! thats why i replaced the View with the Pressable 
     // the way to pass Dynamic properties is like the code bellow -> (`/${product.id}`)
-    <Link href={`/menu/${(product.id)}`} asChild>
+    <Link href={`/restaurantDetails/${(product.id)}`} asChild>
       <Pressable style={styles.container}>
         {/* Since the image always try to fill 100% of the space, we may lost some part of the images.. so resizeMode='contain' will prevent that! */}
         <Image source={{uri: product.image || defaultPizzaImage}} style={styles.image} resizeMode='contain' />

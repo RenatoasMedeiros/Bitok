@@ -28,9 +28,9 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen name="index" options={{ href: null}} />
       <Tabs.Screen
-        name="menu"
+        name="Details"
         options={{
-          title: 'Menu',
+          title: 'Details',
           headerShown: false, //this will desable the header!
           tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
           headerRight: () => (
