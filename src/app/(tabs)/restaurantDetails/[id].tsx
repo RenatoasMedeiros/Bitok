@@ -1,90 +1,40 @@
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native'
-import React from 'react'
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { View, FlatList, Pressable, StyleSheet, Text } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import products from '@assets/data/products';
-import { defaultPizzaImage } from '@/components/ProductListItem';
-import { useState } from 'react'; //to keep tracking of the state
-import Button from '@/components/button';
+import restaurants from '@assets/data/restaurants';
+import ProductListItem from '@/components/RestaurantProductListItem';
+import CallRestaurantButton from '@/components/CallRestaurantButton';
 
-// we name this [id].tsx because it is a dynamic property that we are receiving 
+const RestaurantDetails = () => {
+  const { id } = useLocalSearchParams(); // Get the restaurant ID from the route
 
-const sizes = ['S', 'M', 'L', 'XL'];
+  // Find the restaurant by ID
+  const restaurant = restaurants.find((r) => r.id.toString() === id);
 
-const ProductDetailsScreen = () => {
-  const { id } = useLocalSearchParams();
-
-  //Code for states! (should be declared inside of the component)
-  const [selectedSize, setSelectedSize] = useState('M');
-
-  const addToCart = () => {
-    console.warn('Adding to cart, size', selectedSize)
+  // If the restaurant isn't found, show an error message
+  if (!restaurant) {
+    return <Text>Restaurant not found :(</Text>;
   }
-
-  const product = products.find((p) => p.id.toString() === id)
-  if(!product) {
-    return <Text>Product not found</Text>;
-  }
-
+  // Handler for the "Call Me" button
+  const handleCallPress = () => {
+  console.warn(`Calling ${restaurant.name}...`);
+  };
+  // Render all products and pass them to ProductListItem
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: product?.name }} />
-      <Image source={{ uri: product.image || defaultPizzaImage }} style={styles.image}/>
-
-      <Text>Select size</Text>
-        <View style={styles.sizes}>
-          {sizes.map(size => (
-            //the key is needed for react optimization
-            <Pressable onPress={() => {setSelectedSize(size)}} style={[styles.size, 
-                  {
-                    backgroundColor: selectedSize === size ? 'gainsboro' : 'white',
-                  }
-                ]} 
-                key={size}> 
-              <Text style={[styles.sizeText, 
-                {
-                  color: selectedSize === size ? 'black' : 'gray'
-                }
-                ]}>{size}
-              </Text> 
-            </Pressable>
-          ))}
-        </View>
-      <Text style={styles.price}>{product.price}€</Text>
-      <Button onPress={addToCart} text="Add to cart"></Button>
+    <View>
+      <CallRestaurantButton onPress={handleCallPress} />
+      <FlatList
+        data={products}
+        renderItem={({ item }) => (
+          <ProductListItem product={item} restaurant={restaurant} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={{ gap: 10, padding: 10 }}
+        columnWrapperStyle={{ gap: 10 }}
+      />
     </View>
-  )
-}
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-    padding: 10,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 1,
-  },
-  price: {
-    fontSize: 18, 
-    fontWeight: 'bold',
-    marginTop: 'auto',
-  },
-  sizes: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 10,
-  },
-  size: {
-    backgroundColor: 'gainsboro',  //a very lightgrey fits better 
-    width: 50,
-    aspectRatio: 1,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  sizeText: {
-    fontSize: 20,
-    fontWeight: '500',
-  }
-})
-export default ProductDetailsScreen
+  );
+};
+
+export default RestaurantDetails;

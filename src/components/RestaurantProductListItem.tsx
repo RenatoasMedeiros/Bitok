@@ -1,32 +1,36 @@
-import { StyleSheet, Image, Pressable } from 'react-native';
+import { FlatList, StyleSheet, Image, Pressable } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
-import { Product } from '../types';
+import { Product, Restaurant } from '../types';
 import { Link } from 'expo-router';
 
 export const defaultPizzaImage = 
 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/peperoni.png';
 
-type ProductListItemProps = {
+type RestaurantProductListItemProps = {
     product: Product;
+    restaurant: Restaurant;
 }
-const ProductListItem = ({ product }: ProductListItemProps) => {
+
+const ProductListItem = ({ product, restaurant }: RestaurantProductListItemProps) => {
+  const item = product || restaurant;
+
   return (
-    // Since we are wrapping all the components we need to pass asChild so it maintain the original styles
-    // The link require a child with a onPress Event! thats why i replaced the View with the Pressable 
-    // the way to pass Dynamic properties is like the code bellow -> (`/${product.id}`)
-    <Link href={`/restaurantDetails/${(product.id)}`} asChild>
+    <Link href={`/restaurantDetails/${restaurant.id}/productDetails/${product.id}`} asChild>
       <Pressable style={styles.container}>
-        {/* Since the image always try to fill 100% of the space, we may lost some part of the images.. so resizeMode='contain' will prevent that! */}
-        <Image source={{uri: product.image || defaultPizzaImage}} style={styles.image} resizeMode='contain' />
-        <Text style={styles.title}>{product.name}</Text>
-        <Text style={styles.price}>{product.price}€</Text>
+        <Image
+          source={{ uri: item.image || defaultPizzaImage }}
+          style={styles.image}
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>{item.name}</Text>
+        {product && <Text style={styles.price}>{product.price}€</Text>}
       </Pressable>
     </Link>
-  )
-}
+  );
+};
 
 export default ProductListItem //this is needed to really be able to export our component!
 

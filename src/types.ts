@@ -4,6 +4,7 @@ export type Restaurant = {
   name: string;
   location: string;
   evaluation: number;
+  contact: string;
 };
 
 export type Product = {

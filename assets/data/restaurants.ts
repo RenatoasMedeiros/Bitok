@@ -7,6 +7,8 @@ const restaurants = [
     price: 12.99,
     location: 'no where by now',
     evaluation: 4.7,
+    contact: '912345678'
+
   },
   {
     id: 2,
@@ -16,6 +18,7 @@ const restaurants = [
     price: 14.99,
     location: 'no where by now',
     evaluation: 4.2,
+    contact: '912345678'
   },
   {
     id: 3,
@@ -25,6 +28,7 @@ const restaurants = [
     price: 13.47,
     location: 'no where by now',
     evaluation: 4.5,
+    contact: '912345678'
   },
   {
     id: 4,
@@ -34,6 +38,7 @@ const restaurants = [
     price: 9.9,
     location: 'no where by now',
     evaluation: 2.1,
+    contact: '912345678'
   },
   {
     id: 5,
@@ -43,6 +48,7 @@ const restaurants = [
     price: 12.99,
     location: 'no where by now',
     evaluation: 4.8,
+    contact: '912345678'
   },
   {
     id: 6,
@@ -52,6 +58,7 @@ const restaurants = [
     price: 10.49,
     location: 'no where by now',
     evaluation: 1.5,
+    contact: '912345678'
   },
   {
     id: 7,
@@ -61,6 +68,7 @@ const restaurants = [
     price: 16.99,
     location: 'no where by now',
     evaluation: 1.2,
+    contact: '912345678'
   },
   {
     id: 8,
@@ -70,6 +78,7 @@ const restaurants = [
     price: 12.89,
     location: 'no where by now',
     evaluation: 0.8,
+    contact: '912345678'
   },
   {
     id: 9,
@@ -79,6 +88,7 @@ const restaurants = [
     price: 13.99,
     location: 'no where by now',
     evaluation: 4.0,
+    contact: '912345678'
   },
   {
     id: 10,
@@ -88,6 +98,7 @@ const restaurants = [
     price: 13.29,
     location: 'no where by now',
     evaluation: 2.2,
+    contact: '912345678'
   },
 ];
 

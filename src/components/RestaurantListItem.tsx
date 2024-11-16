@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 26, 
+    fontSize: 22, 
     fontWeight: '600',
     marginVertical: 10,
-    marginLeft: 20,
+    marginLeft: 5,
   },
   info: {
     fontSize: 18, 
-    marginLeft: 20,
+    marginLeft: 5,
     paddingBottom: 5
   },
   // price: {
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     aspectRatio: 1, //the height will be automatically calculated! :) 
   },
   evaluationContainer: {
-    width: 55,
-    height: 55,
+    width: 40,
+    height: 40,
     borderRadius: 8, // Rounded corners
     transform: [{ rotate: '45deg' }], // Rotate the square
     alignItems: 'center',
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   evaluationText: {
     transform: [{ rotate: '-45deg' }], // Rotate text back to normal
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
   },
