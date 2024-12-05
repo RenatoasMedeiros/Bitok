@@ -3,6 +3,8 @@ import { Pressable, StyleSheet, Text, View, GestureResponderEvent } from 'react-
 import { Ionicons } from '@expo/vector-icons';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
+import  Account  from '@/components/Account';
+import  Auth  from '@/components/Auth';
 
 type CallRestaurantButtonProps = {
   onPress: (event: GestureResponderEvent) => void;
@@ -22,9 +24,15 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({ onPress, te
     })
   }, [])
   return (
+    
     <Pressable onPress={onPress} style={styles.buttonContainer}>
-      <Ionicons name="call" size={52} color="white" style={styles.icon} />
-      <Text style={styles.buttonText}>{text}</Text>
+      <View>
+        {session && session.user ? <Account key={session.user.id} session={session} 
+        //logica para abrir as chamadas
+        /> : <Auth />}
+        <Ionicons name="call" size={52} color="white" style={styles.icon} />
+        <Text style={styles.buttonText}>{text}</Text>
+      </View>
     </Pressable>
   );
 };
