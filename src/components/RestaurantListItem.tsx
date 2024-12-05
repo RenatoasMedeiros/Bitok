@@ -3,7 +3,11 @@ import { StyleSheet, Image, Pressable } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
+import { supabase } from '../../lib/supabase'
+import Auth from '@/components/Auth'
+import Account from '@/components/Account'
 import { Restaurant } from '../types';
+import { Session } from '@supabase/supabase-js'
 import { Link } from 'expo-router';
 
 export const defaultPizzaImage = 

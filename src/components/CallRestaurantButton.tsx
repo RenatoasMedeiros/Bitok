@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, GestureResponderEvent } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Session } from '@supabase/supabase-js';
+import { supabase } from '../../lib/supabase';
 
 type CallRestaurantButtonProps = {
   onPress: (event: GestureResponderEvent) => void;
@@ -8,6 +10,17 @@ type CallRestaurantButtonProps = {
 };
 
 const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({ onPress, text = 'Call the Restaurant' }) => {
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
   return (
     <Pressable onPress={onPress} style={styles.buttonContainer}>
       <Ionicons name="call" size={52} color="white" style={styles.icon} />
