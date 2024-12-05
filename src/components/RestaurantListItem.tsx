@@ -4,7 +4,7 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { supabase } from '../../lib/supabase'
-import Auth from '@/components/Auth'
+import Auth from '@/app/(tabs)/authRoute'
 import Account from '@/components/Account'
 import { Restaurant } from '../types';
 import { Session } from '@supabase/supabase-js'
@@ -40,7 +40,7 @@ const getColor = (evaluation: number): string => {
     // Since we are wrapping all the components we need to pass asChild so it maintain the original styles
     // The link require a child with a onPress Event! thats why i replaced the View with the Pressable 
     // the way to pass Dynamic properties is like the code bellow -> (`/${product.id}`)
-    <Link href={`/restaurantDetails/${(restaurant.id)}`} asChild>
+    <Link href={`/(tabs)/restaurantDetails/${(restaurant.id)}`} asChild>
       <Pressable style={styles.container}>
         <View>
           {/* Since the image always try to fill 100% of the space, we may lost some part of the images.. so resizeMode='contain' will prevent that! */}

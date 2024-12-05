@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, GestureResponderEvent } from 'react-native';
+import { Pressable, StyleSheet, Text, View, GestureResponderEvent, Alert, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 import  Account  from '@/components/Account';
-import  Auth  from '@/components/Auth';
+import  Auth  from '@/app/(tabs)/authRoute';
+import { Link, Redirect, router } from 'expo-router';
+import restaurants from '@assets/data/restaurants';
 
 type CallRestaurantButtonProps = {
   onPress: (event: GestureResponderEvent) => void;
   text?: string; // Optional prop to customize the button text
+  phoneNumber: string; // The restaurant's phone number to call
 };
 
-const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({ onPress, text = 'Call the Restaurant' }) => {
+const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({ onPress, text = 'Call the Restaurant', phoneNumber }) => {
   const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
@@ -22,17 +25,32 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({ onPress, te
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
-  }, [])
-  return (
+  }, []);
+
+  const handleCallPress = async () => {
+    if (!phoneNumber) {
+      Alert.alert('Error', 'No phone number provided.');
+      return;
+    }
     
-    <Pressable onPress={onPress} style={styles.buttonContainer}>
-      <View>
-        {session && session.user ? <Account key={session.user.id} session={session} 
-        //logica para abrir as chamadas
-        /> : <Auth />}
+    const url = `tel:${phoneNumber}`;
+    
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      if (!session || !session.user) {
+        router.push("/(tabs)/authRoute")
+        return;
+      }
+      await Linking.openURL(url); // Open the phone dialer with the given number
+    } else {
+      Alert.alert('Error', 'Unable to make a call from this device.');
+    }
+  };
+
+  return (
+    <Pressable onPress={handleCallPress} style={styles.buttonContainer}>
         <Ionicons name="call" size={52} color="white" style={styles.icon} />
         <Text style={styles.buttonText}>{text}</Text>
-      </View>
     </Pressable>
   );
 };

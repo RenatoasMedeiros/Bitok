@@ -17,12 +17,12 @@ const RestaurantDetails = () => {
   }
   // Handler for the "Call Me" button
   const handleCallPress = () => {
-  console.warn(`Calling ${restaurant.name}...`);
+    console.warn(`Calling ${restaurant.name}...`);
   };
   // Render all products and pass them to ProductListItem
   return (
     <View>
-      <CallRestaurantButton onPress={handleCallPress} />
+      <CallRestaurantButton onPress={handleCallPress} phoneNumber={restaurant.contact} />
       <FlatList
         data={products}
         renderItem={({ item }) => (
