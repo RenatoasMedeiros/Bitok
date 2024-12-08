@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, GestureResponderEvent, Alert, Linking } from 'react-native';
+import { Pressable, StyleSheet, Text, GestureResponderEvent, Alert, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
-import  Account  from '@/components/Account';
-import  Auth  from '@/app/(tabs)/authRoute';
 import { Link, Redirect, router } from 'expo-router';
-import restaurants from '@assets/data/restaurants';
 
 type CallRestaurantButtonProps = {
   onPress: (event: GestureResponderEvent) => void;

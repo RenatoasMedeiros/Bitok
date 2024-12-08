@@ -1,16 +1,20 @@
+import { restaurants } from '@assets/data/restaurants';
 export type Restaurant = {
-  id: number;
-  image: string | null;
+  id: string;
+  user_id: string;
   name: string;
+  image_url?: string;
+  price: string; //'€' | '€€' | '€€€';
   location: string;
   evaluation: number;
   contact: string;
 };
 
 export type Product = {
-  id: number;
-  image: string | null;
+  id: string;
+  restaurant_id: string
   name: string;
+  image_url?: string;
   price: number;
 };
 

@@ -11,7 +11,7 @@ import { Session } from '@supabase/supabase-js'
 import { Link } from 'expo-router';
 
 export const defaultPizzaImage = 
-'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/peperoni.png';
+'https://ubrntyhmzwnuxfxwrvsn.supabase.co/storage/v1/object/public/product-images/6cheese.png?t=2024-12-07T09%3A10%3A06.266Z';
 
 type RestaurantListItemProps = {
     restaurant: Restaurant;
