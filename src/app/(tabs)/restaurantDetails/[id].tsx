@@ -126,7 +126,7 @@ const RestaurantDetails = () => {
       </View>
 
       {/* Call Button */}
-      <CallRestaurantButton onPress={handleCallPress} phoneNumber={restaurant.contact} />
+      <CallRestaurantButton onPress={handleCallPress} phoneNumber={restaurant.contact} restaurantId={restaurant.id}/>
 
       {/* Products List */}
       <FlatList
