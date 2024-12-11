@@ -1,4 +1,5 @@
-import { restaurants } from '@assets/data/restaurants';
+import { Timestamp } from "react-native-reanimated/lib/typescript/commonTypes";
+
 export type Restaurant = {
   id: string;
   user_id: string;
@@ -18,43 +19,18 @@ export type Product = {
   price: number;
 };
 
-export type PizzaSize = 'S' | 'M' | 'L' | 'XL';
-
-export type CartItem = {
+export type Reservation = {
   id: string;
-  product: Product;
-  product_id: number;
-  size: PizzaSize;
-  quantity: number;
-};
-
-export const OrderStatusList: OrderStatus[] = [
-  'New',
-  'Cooking',
-  'Delivering',
-  'Delivered',
-];
-
-export type OrderStatus = 'New' | 'Cooking' | 'Delivering' | 'Delivered';
-
-export type Order = {
-  id: number;
-  created_at: string;
-  total: number;
   user_id: string;
-  status: OrderStatus;
-
-  order_items?: OrderItem[];
+  restaurant_id: string;
+  reservation_time: Date;
+  numberGuests: number; //'€' | '€€' | '€€€';
+  status: string;
+  grade: number?;
+  restaurants?: Restaurant;
 };
 
-export type OrderItem = {
-  id: number;
-  product_id: number;
-  products: Product;
-  order_id: number;
-  size: PizzaSize;
-  quantity: number;
-};
+export type PizzaSize = 'S' | 'M' | 'L' | 'XL';
 
 export type Profile = {
   id: string;

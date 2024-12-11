@@ -13,11 +13,9 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import DatePicker from 'react-native-date-picker';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 import { router } from 'expo-router';
-import RNModal from 'react-native-modal'; // Import react-native-modal
 
 type CallRestaurantButtonProps = {
   text?: string; // Optional prop to customize the button text
@@ -32,10 +30,9 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
 }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [reservationTime, setReservationTime] = useState(new Date());
+  const [reservationTime, setReservationTime] = useState(''); // Changed to string
   const [numberOfGuests, setNumberOfGuests] = useState('1');
   const [isCallInitiated, setIsCallInitiated] = useState(false);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   useEffect(() => {
     // Fetch the current session
@@ -93,10 +90,21 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
 
   const handleReservation = async () => {
     // Validate reservation time
-    const selectedTime = reservationTime;
+    if (!reservationTime) {
+      Alert.alert('Error', 'Please enter a reservation time.');
+      return;
+    }
+
+    // Parse the reservation time
+    const parsedDate = new Date(reservationTime);
     const now = new Date();
 
-    if (selectedTime <= now) {
+    if (isNaN(parsedDate.getTime())) {
+      Alert.alert('Error', 'Invalid date and time format. Please use YYYY-MM-DD HH:MM.');
+      return;
+    }
+
+    if (parsedDate <= now) {
       Alert.alert('Error', 'Reservation time must be in the future.');
       return;
     }
@@ -115,12 +123,12 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
       return;
     }
 
-    // Insert the reservation into the database
+    // Insert the reservation into the supabase
     const { data, error } = await supabase.from('reservations').insert([
       {
         user_id: userId,
         restaurant_id: restaurantId,
-        reservation_time: selectedTime.toISOString(),
+        reservation_time: parsedDate.toISOString(),
         number_of_guests: guests,
       },
     ]);
@@ -130,7 +138,6 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
     } else {
       Alert.alert('Success', 'Your reservation has been made.');
       setModalVisible(false);
-      // Optionally, navigate or update UI
     }
   };
 
@@ -152,44 +159,10 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Make a Reservation</Text>
-
-            {/* Reservation Time Picker */}
-            <Text style={styles.label}>Reservation Time:</Text>
-            <Pressable
-              onPress={() => setIsDatePickerOpen(true)}
-              style={styles.datePickerButton}
-            >
-              <Text style={styles.datePickerText}>
-                {reservationTime
-                  ? reservationTime.toLocaleString()
-                  : 'Select Reservation Time'}
-              </Text>
-            </Pressable>
-
-            {/* Date Picker Modal using react-native-modal */}
-            <RNModal
-              isVisible={isDatePickerOpen}
-              onBackdropPress={() => setIsDatePickerOpen(false)}
-              onBackButtonPress={() => setIsDatePickerOpen(false)}
-              style={styles.datePickerOverlay}
-            >
-              <View style={styles.datePickerContainer}>
-                <DatePicker
-                  date={reservationTime}
-                  onDateChange={setReservationTime}
-                  mode="datetime"
-                  minimumDate={new Date()} // Prevent selecting past dates
-                />
-                <Button
-                  title="Confirm"
-                  onPress={() => setIsDatePickerOpen(false)}
-                />
-              </View>
-            </RNModal>
+            <Text style={styles.modalTitle}>Save the Reservation! 🙂‍↔️</Text>
 
             {/* Number of Guests Input */}
-            <Text style={styles.label}>Number of Guests:</Text>
+            <Text style={styles.label}>Someone coming with you? 😋</Text>
             <TextInput
               style={styles.input}
               placeholder="1"
@@ -198,6 +171,17 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
               keyboardType="number-pad"
             />
 
+            {/* Reservation Time Input */}
+            <Text style={styles.label}>What time is it? 🕒</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="YYYY-MM-DD HH:MM"
+              value={reservationTime}
+              onChangeText={setReservationTime}
+              keyboardType="default"
+            />
+
+            {/* Confirm and Cancel Buttons */}
             <View style={styles.modalButtons}>
               <Button title="Cancel" onPress={() => setModalVisible(false)} />
               <Button title="Confirm" onPress={handleReservation} />
@@ -267,28 +251,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-  },
-  datePickerButton: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    justifyContent: 'center',
-  },
-  datePickerText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  datePickerOverlay: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  datePickerContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
 });
 
