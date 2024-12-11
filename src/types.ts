@@ -9,6 +9,7 @@ export type Restaurant = {
   location: string;
   evaluation: number;
   contact: string;
+  category: string;
 };
 
 export type Product = {
@@ -27,7 +28,11 @@ export type Reservation = {
   numberGuests: number; //'€' | '€€' | '€€€';
   status: string;
   grade?: number;
-  restaurants?: Restaurant;
+  restaurants?: {
+    name: string;
+    location: string;
+    image_url?: string;
+  };
 };
 
 export type PizzaSize = 'S' | 'M' | 'L' | 'XL';

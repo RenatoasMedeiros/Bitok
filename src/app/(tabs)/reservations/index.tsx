@@ -1,6 +1,6 @@
 // src/app/(tabs)/reservations/index.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -11,14 +11,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { supabase } from '../../../../lib/supabase';
-import { Reservation } from '../../../types'; // Import the updated Reservation type
+import { Reservation } from '../../../types'; 
 import ReservationsListItem from '@/components/ReservationsListItem';
+import InputFilter from '@/components/InputFilter'; // Import the InputFilter component
 
 export default function ReservationsScreen() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [allReservations, setAllReservations] = useState<Reservation[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const fetchReservations = async () => {
     try {
@@ -26,13 +29,15 @@ export default function ReservationsScreen() {
       setError(null);
 
       const { data, error } = await supabase
-        .from<Reservation>('reservations')
+        .from('reservations')
         .select(`*, restaurants(*)`) // Fetch associated restaurant data
         .order('reservation_time', { ascending: true });
-
+      
+      console.log('Fetched Reservations:', data);
       if (error) throw error;
 
-      setReservations(data || []); // Set to reservations
+      setAllReservations(data || []);
+      setReservations(data || []); 
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -49,6 +54,30 @@ export default function ReservationsScreen() {
     await fetchReservations();
     setRefreshing(false);
   };
+
+  // Filter reservations based on searchTerm
+  const filteredReservations = useMemo(() => {
+    if (!searchTerm) return reservations;
+    
+    const lowerSearch = searchTerm.toLowerCase();
+    
+    return allReservations.filter((res) => {
+      const restaurantName = res.restaurants?.name?.toLowerCase() || '';
+      const reservationStatus = res.status?.toLowerCase() || '';
+      const location = res.restaurants?.location?.toLowerCase() || '';
+      // const dateObj = res.reservation_time ? new Date(res.reservation_time) : null;
+      // const reservationDate = dateObj ? dateObj.toISOString().slice(8,10).toLowerCase() : '';
+
+  
+      return (
+        restaurantName.includes(lowerSearch) ||
+        reservationStatus.includes(lowerSearch) ||
+        // reservationDate.includes(lowerSearch) ||
+        location.includes(lowerSearch)
+      );
+    });
+  }, [searchTerm, allReservations, reservations]);
+  
 
   if (loading) {
     return (
@@ -70,23 +99,32 @@ export default function ReservationsScreen() {
   }
 
   return (
-    <FlatList
-      data={reservations}
-      keyExtractor={(item) => item.id}
-      renderItem={({item}) => <ReservationsListItem reservation={item} />}
-      numColumns={1}
-      contentContainerStyle={styles.listContainer}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    />
+    <View style={{flex: 1}}>
+      {/* Integrate the InputFilter here */}
+      <InputFilter
+        placeholder="Search Reservations..."
+        onFilterChange={(text) => setSearchTerm(text)}
+        debounceTime={300}
+      />
+
+      <FlatList
+        data={filteredReservations}
+        keyExtractor={(item) => item.id}
+        renderItem={({item}) => <ReservationsListItem reservation={item} />}
+        numColumns={1}
+        contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   listContainer: {
     padding: 10,
-    gap: 10, // Note: 'gap' may not be supported in some React Native versions
+    gap: 10,
   },
   center: {
     flex: 1,

@@ -27,15 +27,15 @@ export default function TabLayout() {
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
       }}>
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="reservations"
         options={{
           title: 'Reservations',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar" color={color} size={size} />
           ),
-        }}
-      />
+          }}
+        /> */}
     </Tabs>
   );
 }

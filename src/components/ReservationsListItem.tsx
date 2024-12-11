@@ -1,105 +1,46 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Link, router } from 'expo-router';
-import { Session } from '@supabase/supabase-js';
-import { supabase } from '../../lib/supabase';
+import { Link } from 'expo-router';
 import { Reservation } from '../types';
 
-const ReservationsListItem: React.FC = () => {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [session, setSession] = useState<Session | null>(null);
+interface ReservationsListItemProps {
+  reservation: Reservation;
+}
 
-  useEffect(() => {
-    // Fetch the current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setSession(session);
-        fetchReservations(session.user.id); // Fetch reservations for the logged-in user
-      } else {
-        router.push('/(tabs)/authRoute'); // Redirect if no session
-      }
-    });
-  
-    // Listen for auth state changes
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session) {
-          setSession(session);
-          fetchReservations(session.user.id); // Fetch reservations for the logged-in user
-        } else {
-          router.push('/(tabs)/authRoute'); // Redirect if no session
-        }
-      }
-    );
-  
-    // Unsubscribe on cleanup
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
-
-  const fetchReservations = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('reservations')
-        .select('*, restaurants(*)') // Adjust columns based on your database schema
-        .eq('user_id', userId); // Filter reservations by user_id
-
-      if (error) {
-        console.error('Error fetching reservations:', error);
-      } else {
-        setReservations(data || []);
-      }
-    } catch (error) {
-      console.error('Error fetching reservations:', error);
-    }
-  };
-
-  if (!session) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
+const ReservationsListItem: React.FC<ReservationsListItemProps> = ({ reservation }) => {
   return (
-    <View>
-      {reservations.map((reservation) => (
-        <Link
-          key={reservation.id}
-          href={`/(tabs)/reservations/${reservation.id}`}
-          asChild
-        >
-          <TouchableOpacity style={styles.container}>
-            {reservation.restaurants?.image_url && (
-              <Image
-                source={{ uri: reservation.restaurants.image_url }}
-                style={styles.image}
-              />
-            )}
-            <View style={styles.infoContainer}>
-              <Text style={styles.restaurantName}>
-                {reservation.restaurants?.name}
-              </Text>
-              <Text style={styles.details}>
-                Time: {new Date(reservation.reservation_time).toLocaleString()}
-              </Text>
-              <Text style={styles.details}>People: {reservation.numberGuests}</Text>
-              <Text style={styles.details}>{reservation.status}</Text>
-              {reservation.restaurants?.location && (
-                <Text style={styles.details}>
-                  📍 {reservation.restaurants.location}
-                </Text>
-              )}
-              {reservation.grade !== null && reservation.grade !== undefined && (
-                <Text style={styles.gradeText}>Rating: {reservation.grade} ⭐</Text>
-              )}
-            </View>
-          </TouchableOpacity>
-        </Link>
-      ))}
-    </View>
+    <Link
+      key={reservation.id}
+      href={`/(tabs)/reservations/${reservation.id}`}
+      asChild
+    >
+      <TouchableOpacity style={styles.container}>
+        {reservation.restaurants?.image_url && (
+          <Image
+            source={{ uri: reservation.restaurants.image_url }}
+            style={styles.image}
+          />
+        )}
+        <View style={styles.infoContainer}>
+          <Text style={styles.restaurantName}>
+            {reservation.restaurants?.name}
+          </Text>
+          <Text style={styles.details}>
+            Date: {new Date(reservation.reservation_time).toLocaleString()}
+          </Text>
+          <Text style={styles.status}>{reservation.status}</Text>
+          <Text style={styles.details}>People: {reservation.number_of_guests}</Text>
+          {reservation.restaurants?.location && (
+            <Text style={styles.details}>
+              📍 {reservation.restaurants.location} Km
+            </Text>
+          )}
+          {reservation.grade !== null && reservation.grade !== undefined && (
+            <Text style={styles.gradeText}>Rating: {reservation.grade} ⭐</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    </Link>
   );
 };
 
@@ -135,6 +76,10 @@ const styles = StyleSheet.create({
   details: {
     fontSize: 14,
     color: '#555',
+  },
+  status: {
+    fontSize: 16,
+    color :'#551',
   },
   gradeText: {
     marginTop: 4,
