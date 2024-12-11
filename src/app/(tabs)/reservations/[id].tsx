@@ -210,7 +210,7 @@ const ReservationDetailScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7', // Light background for iOS
+    backgroundColor: '#f7f7f7',
   },
   scrollContainer: {
     padding: 16,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 4, // For Android shadow
+    elevation: 4,
   },
   restaurantName: {
     fontSize: 22,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     flexDirection: 'row',
-    backgroundColor: '#FF3B30', // iOS red
+    backgroundColor: '#FF3B30',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,

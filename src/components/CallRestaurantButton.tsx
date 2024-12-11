@@ -27,7 +27,7 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
   text = 'Call the Restaurant',
   phoneNumber,
   restaurantId,
-}) => {
+  }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [reservationTime, setReservationTime] = useState(''); // Changed to string
