@@ -26,7 +26,7 @@ export type Reservation = {
   reservation_time: Date;
   numberGuests: number; //'€' | '€€' | '€€€';
   status: string;
-  grade: number?;
+  grade?: number;
   restaurants?: Restaurant;
 };
 
