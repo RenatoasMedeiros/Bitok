@@ -1,4 +1,4 @@
-// src/app/(tabs)/restaurants/index.tsx
+// src/app/(tabs)/reservations/index.tsx
 
 import React, { useEffect, useState } from 'react';
 import {
@@ -14,7 +14,7 @@ import { supabase } from '../../../../lib/supabase';
 import { Reservation } from '../../../types'; // Import the updated Reservation type
 import ReservationsListItem from '@/components/ReservationsListItem';
 
-export default function RestaurantsScreen() {
+export default function ReservationsScreen() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
