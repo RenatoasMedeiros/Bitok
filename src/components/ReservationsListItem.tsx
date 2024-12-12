@@ -27,13 +27,12 @@ const ReservationsListItem: React.FC<ReservationsListItemProps> = ({ reservation
             {reservation.restaurants?.name}
           </Text>
           <Text style={styles.details}>
-            Time: {new Date(reservation.reservation_time).toLocaleString()}
+          ⌛ {new Date(reservation.reservation_time).toLocaleString()}
           </Text>
-          <Text style={styles.details}>People: {reservation.numberGuests}</Text>
-          <Text style={styles.details}>{reservation.status}</Text>
+          <Text style={styles.details}>✨ {reservation.status}</Text>
           {reservation.restaurants?.location && (
             <Text style={styles.details}>
-              📍 {reservation.restaurants.location}
+              📍 {reservation.restaurants.location} km
             </Text>
           )}
           {reservation.grade !== null && reservation.grade !== undefined && (
@@ -75,6 +74,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   details: {
+    padding: 3,
     fontSize: 14,
     color: '#555',
   },

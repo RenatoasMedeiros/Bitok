@@ -86,6 +86,9 @@ const ReservationDetailScreen: React.FC = () => {
 
   // Handle submission of grade
   const handleSubmitGrade = async () => {
+    if(status === 'done'){
+      Alert.alert('Upsi!', 'You cannot change it now...')
+    }
     if (grade === null) {
       Alert.alert('Validation', 'Please select a grade before submitting.');
       return;
@@ -95,7 +98,7 @@ const ReservationDetailScreen: React.FC = () => {
       setSubmitting(true);
       const { error } = await supabase
         .from('reservations')
-        .update({ grade })
+        .update({ grade, status: 'done' })
         .eq('id', id);
 
       if (error) throw error;

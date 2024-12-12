@@ -33,15 +33,15 @@ export default function TabsLayout() {
       {/* Reorder tabs to set 'restaurants' as the first/default tab */}
       <Tabs.Screen
         name="restaurants"
-        options={{ title: 'Restaurants' }}
+        options={{ title: 'Restaurants', headerShown: false }}
       />
       <Tabs.Screen
         name="reservations"
-        options={{ title: 'Reservations' }}
+        options={{ title: 'Reservations', headerShown: false }}
       />
       <Tabs.Screen
         name="account"
-        options={{ title: 'Account' }}
+        options={{ title: 'Account' , headerShown: false}}
       />
     </Tabs>
   );

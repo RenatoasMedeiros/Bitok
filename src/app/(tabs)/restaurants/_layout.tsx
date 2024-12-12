@@ -7,14 +7,14 @@ export default function RestaurantsStack() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ title: 'Restaurants' }} />
-      <Stack.Screen name="[id]" options={{ title: 'Restaurant Details' }} />
+      <Stack.Screen name="restaurantDetails" options={{ title: 'Restaurant Details' }} />
       <Stack.Screen
         name="productDetails/[productId]"
         options={{ title: 'Product Details' }}
       />
       <Stack.Screen
         name="restaurantDetails/[detailId]"
-        options={{ title: 'Restaurant Details' }}
+        options={{ title: 'Restaurant Details'}}
       />
     </Stack>
   );

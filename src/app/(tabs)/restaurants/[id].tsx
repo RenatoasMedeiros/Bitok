@@ -16,10 +16,6 @@ const ProductDetailsScreen = () => {
   //Code for states! (should be declared inside of the component)
   const [selectedSize, setSelectedSize] = useState('M');
 
-  const addToCart = () => {
-    console.warn('Adding to cart, size', selectedSize)
-  }
-
   const product = products.find((p) => p.id.toString() === id)
   if(!product) {
     return <Text>Product not found</Text>;
@@ -50,7 +46,6 @@ const ProductDetailsScreen = () => {
           ))}
         </View>
       <Text style={styles.price}>{product.price}€</Text>
-      <Button onPress={addToCart} text="Add to cart"></Button>
     </View>
   )
 }

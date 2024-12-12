@@ -23,6 +23,7 @@ export default function ReservationsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('pending'); // New state for status filter
   const [session, setSession] = useState<Session | null>(null);
 
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function ReservationsScreen() {
           setSession(session);
           fetchReservations(session.user.id); // Fetch reservations for the logged-in user
         } else {
-          router.push('/account'); // Redirect if no session
+          router.push('/(tabs)/account'); // Redirect if no session
         }
       }
     );
@@ -86,24 +87,36 @@ export default function ReservationsScreen() {
     }
   };
 
-  // Filter reservations based on searchTerm
+  // Filter reservations based on searchTerm and statusFilter
   const filteredReservations = useMemo(() => {
-    if (!searchTerm) return allReservations;
-    
-    const lowerSearch = searchTerm.toLowerCase();
-    
-    return allReservations.filter((res) => {
-      const restaurantName = res.restaurants?.name?.toLowerCase() || '';
-      const reservationStatus = res.status?.toLowerCase() || '';
-      const location = res.restaurants?.location?.toLowerCase() || '';
+    let filtered = allReservations;
 
-      return (
-        restaurantName.includes(lowerSearch) ||
-        reservationStatus.includes(lowerSearch) ||
-        location.includes(lowerSearch)
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(
+        (res) => res.status.toLowerCase() === statusFilter.toLowerCase()
       );
-    });
-  }, [searchTerm, allReservations]);
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+
+      filtered = filtered.filter((res) => {
+        const restaurantName = res.restaurants?.name?.toLowerCase() || '';
+        const reservationStatus = res.status?.toLowerCase() || '';
+        const location = res.restaurants?.location?.toLowerCase() || '';
+
+        return (
+          restaurantName.includes(lowerSearch) ||
+          reservationStatus.includes(lowerSearch) ||
+          location.includes(lowerSearch)
+        );
+      });
+    }
+
+    return filtered;
+  }, [searchTerm, allReservations, statusFilter]);
 
   if (!session) {
     return (
@@ -125,7 +138,7 @@ export default function ReservationsScreen() {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>Error: {error}</Text>
-        <TouchableOpacity onPress={() => fetchReservations(session.user.id)}>
+        <TouchableOpacity onPress={() => fetchReservations(session.user.id)} style={styles.retryButton}>
           <Text style={styles.retryText}>Tap to Retry</Text>
         </TouchableOpacity>
       </View>
@@ -133,18 +146,56 @@ export default function ReservationsScreen() {
   }
 
   return (
-    <View style={{flex: 1}}>
-      {/* Integrate the InputFilter here */}
-      <InputFilter
+    <View style={{ flex: 1 }}>
+      {/* Status Filter Buttons */}
+      <View style={styles.filterContainer}>
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            statusFilter === 'pending' && styles.activeFilterButton,
+          ]}
+          onPress={() => setStatusFilter('pending')}
+        >
+          <Text
+            style={[
+              styles.filterButtonText,
+              statusFilter === 'pending' && styles.activeFilterButtonText,
+            ]}
+          >
+            Pending
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.filterButton,
+            statusFilter === 'all' && styles.activeFilterButton,
+          ]}
+          onPress={() => setStatusFilter('all')}
+        >
+          <Text
+            style={[
+              styles.filterButtonText,
+              statusFilter === 'all' && styles.activeFilterButtonText,
+            ]}
+          >
+            All
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Search Input */}
+      {/* <InputFilter
         placeholder="Search Reservations..."
         onFilterChange={(text) => setSearchTerm(text)}
         debounceTime={300}
-      />
+      /> */}
 
+      {/* Reservations List */}
       <FlatList
         data={filteredReservations}
         keyExtractor={(item) => item.id}
-        renderItem={({item}) => <ReservationsListItem reservation={item} />}
+        renderItem={({ item }) => <ReservationsListItem reservation={item} />}
         numColumns={1}
         contentContainerStyle={styles.listContainer}
         refreshControl={
@@ -184,5 +235,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: 'gray',
     fontSize: 16,
+  },
+  // New Styles for Filter Buttons
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 20,
+    marginHorizontal: 5,
+  },
+  activeFilterButton: {
+    backgroundColor: '#007AFF', // iOS blue
+  },
+  filterButtonText: {
+    color: '#333',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  activeFilterButtonText: {
+    color: '#fff',
+  },
+  retryButton: {
+    padding: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 8,
   },
 });

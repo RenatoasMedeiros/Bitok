@@ -120,7 +120,7 @@ const RestaurantDetails = () => {
         <View style={styles.info}>
           <Text style={styles.name}>{restaurant.name}</Text>
           <Text style={styles.price}>{restaurant.price}</Text>
-          <Text style={styles.location}>{restaurant.location}</Text>
+          <Text style={styles.location}>📍 {restaurant.location} km</Text>
           <Text style={styles.evaluation}>⭐ {restaurant.evaluation}</Text>
         </View>
       </View>
