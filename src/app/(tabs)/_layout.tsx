@@ -1,41 +1,48 @@
+// src/app/(tabs)/_layout.tsx
+
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { Tabs } from 'expo-router';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Ensure Ionicons is installed
+import Colors from '@/constants/Colors'; // Adjust the path based on your project structure
+import { useColorScheme } from '@/components/useColorScheme'; // Custom hook for color scheme
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />;
-}
-
-export default function TabLayout() {
+export default function TabsLayout() {
   const colorScheme = useColorScheme();
-  
 
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName = '';
+
+          if (route.name === 'reservations') {
+            iconName = focused ? 'calendar' : 'calendar-outline';
+          } else if (route.name === 'account') {
+            iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'restaurants') {
+            iconName = focused ? 'restaurant' : 'restaurant-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      {/* <Tabs.Screen
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      {/* Reorder tabs to set 'restaurants' as the first/default tab */}
+      <Tabs.Screen
+        name="restaurants"
+        options={{ title: 'Restaurants' }}
+      />
+      <Tabs.Screen
         name="reservations"
-        options={{
-          title: 'Reservations',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" color={color} size={size} />
-          ),
-          }}
-        /> */}
+        options={{ title: 'Reservations' }}
+      />
+      <Tabs.Screen
+        name="account"
+        options={{ title: 'Account' }}
+      />
     </Tabs>
   );
 }

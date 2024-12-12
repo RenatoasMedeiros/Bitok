@@ -18,7 +18,7 @@ const ProductListItem = ({ product, restaurant }: RestaurantProductListItemProps
   const item = product || restaurant;
 
   return (
-    <Link href={`/restaurantDetails/${restaurant.id}/productDetails/${product.id}`} asChild>
+    // <Link href={`/restaurantDetails/${restaurant.id}/productDetails/${product.id}`} asChild>
       <Pressable style={styles.container}>
         <Image
           source={{ uri: item.image || defaultPizzaImage }}
@@ -28,7 +28,7 @@ const ProductListItem = ({ product, restaurant }: RestaurantProductListItemProps
         <Text style={styles.title}>{item.name}</Text>
         {product && <Text style={styles.price}>{product.price}€</Text>}
       </Pressable>
-    </Link>
+    // </Link>
   );
 };
 

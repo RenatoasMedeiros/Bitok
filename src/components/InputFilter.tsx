@@ -8,7 +8,8 @@ import {
   TouchableOpacity, 
   Text, 
   Animated, 
-  Platform 
+  Platform, 
+  TextInputProps
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Ensure react-native-vector-icons is installed
 import { debounce } from 'lodash';

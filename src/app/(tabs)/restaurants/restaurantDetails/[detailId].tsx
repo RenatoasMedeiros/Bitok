@@ -11,14 +11,14 @@ import {
   RefreshControl,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { supabase } from "../../../../lib/supabase"; // Adjust the path based on your project structure
+import { supabase } from "../../../../../lib/supabase"; // Adjust the path based on your project structure
 import ProductListItem from "@/components/RestaurantProductListItem";
 import CallRestaurantButton from "@/components/CallRestaurantButton";
 import { Product, Restaurant } from "@/types";
 
 const RestaurantDetails = () => {
-  const { id } = useLocalSearchParams(); // Get the restaurant ID from the route
-  const restaurantId = id as string;
+  const { detailId } = useLocalSearchParams(); // Get the restaurant ID from the route
+  const restaurantId = detailId as string;
 
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [products, setProducts] = useState<Product[]>([]);

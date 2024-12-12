@@ -12,6 +12,7 @@ import {
   Button,
 } from 'react-native';
 import { supabase } from '../../../../lib/supabase';
+// import { supabase } from "../../../../../.. /lib/supabase";
 import RestaurantListItem from '../../../components/RestaurantListItem';
 import { Restaurant } from '../../../types';
 import InputFilter from '@/components/InputFilter'; // Import the enhanced InputFilter component

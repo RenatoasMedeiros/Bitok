@@ -1,6 +1,5 @@
 import { View, FlatList } from 'react-native';
 import products from '@assets/data/products';
-import restaurants from '@assets/data/restaurants';
 import ProductListItem from '@/components/RestaurantProductListItem';
 
 export default function RestaurantDetailsScreen({ route }) {

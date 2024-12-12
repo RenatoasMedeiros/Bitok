@@ -1,3 +1,5 @@
+// src/components/ReservationsListItem.tsx
+
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Link } from 'expo-router';
@@ -10,8 +12,7 @@ interface ReservationsListItemProps {
 const ReservationsListItem: React.FC<ReservationsListItemProps> = ({ reservation }) => {
   return (
     <Link
-      key={reservation.id}
-      href={`/(tabs)/reservations/${reservation.id}`}
+      href={`/reservations/${reservation.id}`} // Adjust path based on your routing
       asChild
     >
       <TouchableOpacity style={styles.container}>
@@ -26,13 +27,13 @@ const ReservationsListItem: React.FC<ReservationsListItemProps> = ({ reservation
             {reservation.restaurants?.name}
           </Text>
           <Text style={styles.details}>
-            Date: {new Date(reservation.reservation_time).toLocaleString()}
+            Time: {new Date(reservation.reservation_time).toLocaleString()}
           </Text>
-          <Text style={styles.status}>{reservation.status}</Text>
-          <Text style={styles.details}>People: {reservation.number_of_guests}</Text>
+          <Text style={styles.details}>People: {reservation.numberGuests}</Text>
+          <Text style={styles.details}>{reservation.status}</Text>
           {reservation.restaurants?.location && (
             <Text style={styles.details}>
-              📍 {reservation.restaurants.location} Km
+              📍 {reservation.restaurants.location}
             </Text>
           )}
           {reservation.grade !== null && reservation.grade !== undefined && (
@@ -76,10 +77,6 @@ const styles = StyleSheet.create({
   details: {
     fontSize: 14,
     color: '#555',
-  },
-  status: {
-    fontSize: 16,
-    color :'#551',
   },
   gradeText: {
     marginTop: 4,

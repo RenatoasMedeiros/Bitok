@@ -14,16 +14,49 @@ import { supabase } from '../../../../lib/supabase';
 import { Reservation } from '../../../types'; 
 import ReservationsListItem from '@/components/ReservationsListItem';
 import InputFilter from '@/components/InputFilter'; // Import the InputFilter component
+import { Session } from '@supabase/supabase-js';
+import { useRouter } from 'expo-router';
 
 export default function ReservationsScreen() {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [allReservations, setAllReservations] = useState<Reservation[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [session, setSession] = useState<Session | null>(null);
 
-  const fetchReservations = async () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Fetch the current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setSession(session);
+        fetchReservations(session.user.id); // Fetch reservations for the logged-in user
+      } else {
+        router.push('/(tabs)/account'); // Redirect if no session
+      }
+    });
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          setSession(session);
+          fetchReservations(session.user.id); // Fetch reservations for the logged-in user
+        } else {
+          router.push('/account'); // Redirect if no session
+        }
+      }
+    );
+
+    // Unsubscribe on cleanup
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const fetchReservations = async (userId: string) => {
     try {
       setLoading(true);
       setError(null);
@@ -31,13 +64,13 @@ export default function ReservationsScreen() {
       const { data, error } = await supabase
         .from('reservations')
         .select(`*, restaurants(*)`) // Fetch associated restaurant data
+        .eq('user_id', userId) // Filter reservations by user_id
         .order('reservation_time', { ascending: true });
       
       console.log('Fetched Reservations:', data);
       if (error) throw error;
 
-      setAllReservations(data || []);
-      setReservations(data || []); 
+      setAllReservations(data || []); 
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -45,19 +78,17 @@ export default function ReservationsScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchReservations();
-  }, []);
-
   const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchReservations();
-    setRefreshing(false);
+    if (session) {
+      setRefreshing(true);
+      await fetchReservations(session.user.id);
+      setRefreshing(false);
+    }
   };
 
   // Filter reservations based on searchTerm
   const filteredReservations = useMemo(() => {
-    if (!searchTerm) return reservations;
+    if (!searchTerm) return allReservations;
     
     const lowerSearch = searchTerm.toLowerCase();
     
@@ -65,19 +96,22 @@ export default function ReservationsScreen() {
       const restaurantName = res.restaurants?.name?.toLowerCase() || '';
       const reservationStatus = res.status?.toLowerCase() || '';
       const location = res.restaurants?.location?.toLowerCase() || '';
-      // const dateObj = res.reservation_time ? new Date(res.reservation_time) : null;
-      // const reservationDate = dateObj ? dateObj.toISOString().slice(8,10).toLowerCase() : '';
 
-  
       return (
         restaurantName.includes(lowerSearch) ||
         reservationStatus.includes(lowerSearch) ||
-        // reservationDate.includes(lowerSearch) ||
         location.includes(lowerSearch)
       );
     });
-  }, [searchTerm, allReservations, reservations]);
-  
+  }, [searchTerm, allReservations]);
+
+  if (!session) {
+    return (
+      <View style={styles.center}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -91,7 +125,7 @@ export default function ReservationsScreen() {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>Error: {error}</Text>
-        <TouchableOpacity onPress={fetchReservations}>
+        <TouchableOpacity onPress={() => fetchReservations(session.user.id)}>
           <Text style={styles.retryText}>Tap to Retry</Text>
         </TouchableOpacity>
       </View>
@@ -115,6 +149,9 @@ export default function ReservationsScreen() {
         contentContainerStyle={styles.listContainer}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No reservations found.</Text>
         }
       />
     </View>
@@ -140,6 +177,12 @@ const styles = StyleSheet.create({
   retryText: {
     color: 'blue',
     textDecorationLine: 'underline',
+    fontSize: 16,
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: 'gray',
     fontSize: 16,
   },
 });

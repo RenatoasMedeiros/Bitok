@@ -74,7 +74,7 @@ const CallRestaurantButton: React.FC<CallRestaurantButtonProps> = ({
     }
 
     if (!session || !session.user) {
-      router.push('/(tabs)/authRoute');
+      router.push('/(tabs)/account');
       return;
     }
 
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: '#34c759',
     paddingVertical: 20,
-    paddingHorizontal: 15,
+    paddingHorizontal: 45,
     marginHorizontal: 85,
     marginVertical: 15,
   },
