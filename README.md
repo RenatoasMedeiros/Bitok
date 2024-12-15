@@ -35,7 +35,6 @@
 - Node.js instalado
 - Yarn ou npm para gestão de pacotes
 - Expo CLI instalado globalmente (ou então utilizar `npx` para executar a versão mais recente do Expo CLI diretamente do repositório npm)
-- Configuração de variáveis de ambiente no ficheiro `.env`
 
 ### Passos para Configurar
 
